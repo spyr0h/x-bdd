@@ -15,7 +15,9 @@ jobs:
           command: |
             ls -la
             echo "Starting pushing docker image & config to VPS"
-            scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/x-bdd/
+            scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mkdir x-bdd'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mv docker-compose.yml ~/x-bdd'
             echo "Docker compose file pushed to VPS"
   
 workflows:
