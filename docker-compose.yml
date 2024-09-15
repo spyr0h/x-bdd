@@ -21,5 +21,6 @@ services:
       MYSQL_ROOT_PASSWORD: '${X_BDD}'
       MYSQL_USER: '${X_BDD_USER}'
       MYSQL_PASSWORD: '${X_BDD_PWD}'
+      
 volumes:
   db-data:
