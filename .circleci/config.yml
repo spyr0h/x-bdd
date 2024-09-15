@@ -19,6 +19,19 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mkdir x-bdd'
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mv docker-compose.yml ~/x-bdd'
             echo "Docker compose file pushed to VPS"
+  serve-docker-image:
+    executor:
+      name: docker/docker
+      tag: "3.6"
+    steps:
+      - run:
+          name: Docker compose down
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker-compose down'
+      - run:
+          name: Docker compose up
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'X_ROOT_PWD=$X_ROOT_PWD X_BDD=$X_BDD X_BDD_USER=$X_BDD_USER X_BDD_PWD=$X_BDD_PWD docker-compose up -d'
   
 workflows:
   build-and-deploy:
