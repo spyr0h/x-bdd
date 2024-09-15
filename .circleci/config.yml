@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Docker compose down
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose down'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose down -f /x-bdd/docker-compose.yml'
       - run:
           name: Docker compose up
           command: |
