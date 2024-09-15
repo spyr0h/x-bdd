@@ -14,7 +14,7 @@ jobs:
             echo "Docker compose file pushed to VPS"
   
 workflows:
-  push-and-build:
+  build-and-deploy:
     jobs:
       - push-docker-compose-file
       
