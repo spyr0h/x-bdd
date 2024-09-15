@@ -1,0 +1,21 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.7.0
+
+jobs:
+  push-docker-compose-file:
+    steps:
+      - run:
+          name: Pushing Docker compose file
+          command: |
+            echo "Starting pushing docker image & config to VPS"
+            scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/x-bdd
+            echo "Docker compose file pushed to VPS"
+  
+workflows:
+  push-and-build:
+    jobs:
+      - push-docker-compose-file
+      
+      
