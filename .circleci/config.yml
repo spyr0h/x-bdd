@@ -31,6 +31,7 @@ jobs:
       - run:
           name: Docker compose up
           command: |
+            echo $X_BDD
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'X_ROOT_PWD=$X_ROOT_PWD X_BDD=$X_BDD X_BDD_USER=$X_BDD_USER X_BDD_PWD=$X_BDD_PWD docker compose -f ~/x-bdd/docker-compose.yml up -d'
   
 workflows:
