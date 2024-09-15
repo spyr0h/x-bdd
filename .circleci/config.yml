@@ -10,7 +10,6 @@ jobs:
       tag: "3.9"
     steps:
       - checkout
-      - docker/install-docker-tools
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -18,7 +17,7 @@ jobs:
           command: |
             ls -la
             echo "Starting pushing docker image & config to VPS"
-            scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/
+            scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/x-bdd
             echo "Docker compose file pushed to VPS"
   
 workflows:
