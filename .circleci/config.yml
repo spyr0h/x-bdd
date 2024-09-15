@@ -27,11 +27,11 @@ jobs:
       - run:
           name: Docker compose down
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f /x-bdd/docker-compose.yml down'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f ~/x-bdd/docker-compose.yml down'
       - run:
           name: Docker compose up
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'X_ROOT_PWD=$X_ROOT_PWD X_BDD=$X_BDD X_BDD_USER=$X_BDD_USER X_BDD_PWD=$X_BDD_PWD docker compose -f /x-bdd/docker-compose.yml up -d'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'X_ROOT_PWD=$X_ROOT_PWD X_BDD=$X_BDD X_BDD_USER=$X_BDD_USER X_BDD_PWD=$X_BDD_PWD docker compose -f ~/x-bdd/docker-compose.yml up -d'
   
 workflows:
   build-and-deploy:
