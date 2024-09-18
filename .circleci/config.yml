@@ -11,26 +11,28 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Generate .env file
+          command: |
+            echo "X_ROOT_PWD=$X_ROOT_PWD" > .env
+            echo "X_BDD=$X_BDD" >> .env
+            echo "X_BDD_USER=$X_BDD_USER" >> .env
+            echo "X_BDD_PWD=$X_BDD_PWD" >> .env
+      - run:
           name: Pushing Docker compose file
           command: |
             ls -la
             echo "Starting pushing docker image & config to VPS"
             scp -oStrictHostKeyChecking=no docker-compose.yml $SSHUSER@$SSHHOST:~/
+            scp -oStrictHostKeyChecking=no .env $SSHUSER@$SSHHOST:~/
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mkdir -p x-bdd'
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mv docker-compose.yml ~/x-bdd'
-            echo "Docker compose file pushed to VPS"
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'mv .env ~/x-bdd'
+            echo "Docker compose files pushed to VPS"
   docker-compose-up:
     executor:
       name: docker/docker
       tag: "3.6"
     steps:
-      - run:
-          name: Vérifier les variables d'environnement
-          command: |
-            echo "X_ROOT_PWD=$X_ROOT_PWD"
-            echo "X_BDD=$X_BDD"
-            echo "X_BDD_USER=$X_BDD_USER"
-            echo "X_BDD_PWD=$X_BDD_PWD"
       - run:
           name: Docker compose down
           command: |
