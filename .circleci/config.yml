@@ -25,6 +25,13 @@ jobs:
       tag: "3.6"
     steps:
       - run:
+          name: Vérifier les variables d'environnement
+          command: |
+            echo "X_ROOT_PWD=$X_ROOT_PWD"
+            echo "X_BDD=$X_BDD"
+            echo "X_BDD_USER=$X_BDD_USER"
+            echo "X_BDD_PWD=$X_BDD_PWD"
+      - run:
           name: Docker compose down
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f ~/x-bdd/docker-compose.yml down'
