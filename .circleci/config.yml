@@ -37,6 +37,7 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
+            echo "DOMAIN=$DOMAIN" > .cacahuete
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
               export DOMAIN=$DOMAIN
               echo "Configuring Nginx with security settings..."
