@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "\<< EOF
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "export DOMAIN=$DOMAIN && \<< EOF
               echo "Configuring Nginx with security settings..."
 
               cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
