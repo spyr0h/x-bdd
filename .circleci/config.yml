@@ -7,10 +7,7 @@ jobs:
   setup-server:
     executor:
       name: docker/docker
-      tag: "3.6"
-    environment:
-      DOMAIN: $DOMAIN
-      EMAIL: $EMAIL
+      tag: "3.9"
     steps:
       - run:
           name: Install Dependencies (Nginx, Certbot) if not installed
@@ -35,12 +32,13 @@ jobs:
   configure-nginx:
     executor:
       name: docker/docker
-      tag: "3.6"
+      tag: "3.9"
     steps:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
+              export DOMAIN=$DOMAIN
               echo "Configuring Nginx with security settings..."
 
               cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
@@ -85,7 +83,7 @@ jobs:
   generate-ssl-certificate:
     executor:
       name: docker/docker
-      tag: "3.6"
+      tag: "3.9"
     steps:
       - run:
           name: Generate SSL Certificate if not exists
@@ -122,7 +120,7 @@ jobs:
   docker-compose-up:
     executor:
       name: docker/docker
-      tag: "3.6"
+      tag: "3.9"
     steps:
       - run:
           name: Restart Docker Services
