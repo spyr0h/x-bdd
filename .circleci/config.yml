@@ -33,15 +33,13 @@ jobs:
     executor:
       name: docker/docker
       tag: "3.9"
-    environment:
-      DOMAIN: $DOMAIN
     steps:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
+            scp -oStrictHostKeyChecking=no $BASH_ENV $SSHUSER@$SSHHOST:circleci.env
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
-              pwd
-              echo "DOMAIN=$DOMAIN" > .cacahuete
+              source circleci.env
 
               export DOMAIN=$DOMAIN
               echo "Configuring Nginx with security settings..."
@@ -83,6 +81,7 @@ jobs:
               sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/api.conf
               sudo nginx -t && sudo systemctl reload nginx
               echo "Nginx configuration applied successfully!"
+              rm ~/circleci.env
             EOF
 
   generate-ssl-certificate:
