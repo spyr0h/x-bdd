@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "export DOMAIN=$DOMAIN && cat <<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "export DOMAIN=$DOMAIN && cat \<<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
             limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
             server {
