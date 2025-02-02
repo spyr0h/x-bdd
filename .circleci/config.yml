@@ -8,6 +8,9 @@ jobs:
     executor:
       name: docker/docker
       tag: "3.6"
+    environment:
+      DOMAIN: $DOMAIN
+      EMAIL: $EMAIL
     steps:
       - run:
           name: Install Dependencies (Nginx, Certbot) if not installed
