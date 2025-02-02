@@ -48,10 +48,13 @@ jobs:
               cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
               limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
-              \\$host
-              \$host
-              \$\$host
-              \$$host
+              a \\$host
+              b \$host
+              c \$\$host
+              d \$$host
+              e "\$host"
+              f "$host"
+              g \$\host
 
               \\\\$host
 
