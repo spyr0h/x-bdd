@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Install Dependencies (Nginx, Certbot) if not installed
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
               if ! command -v nginx &> /dev/null; then
                 echo "Installing Nginx..."
                 sudo apt update && sudo apt install -y nginx
@@ -32,7 +32,7 @@ jobs:
               else
                 echo "Certbot already installed. Skipping..."
               fi
-            EOF
+            '"
 
   configure-nginx:
     executor:
@@ -83,7 +83,7 @@ jobs:
       - run:
           name: Generate SSL Certificate if not exists
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "env DOMAIN=$DOMAIN EMAIL=$EMAIL bash -c '
               CERT_FILE="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
               if [ ! -f "$CERT_FILE" ]; then
                 echo "Generating SSL Certificate..."
@@ -91,7 +91,7 @@ jobs:
               else
                 echo "SSL Certificate already exists. Skipping..."
               fi
-            EOF
+            '"
 
   push-docker-compose-file:
     executor:
