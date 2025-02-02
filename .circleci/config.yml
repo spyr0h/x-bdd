@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Install Dependencies (Nginx, Certbot) if not installed
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST << 'EOF'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
               if ! command -v nginx &> /dev/null; then
                 echo "Installing Nginx..."
                 sudo apt update && sudo apt install -y nginx
