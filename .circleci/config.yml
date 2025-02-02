@@ -45,7 +45,7 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "export DOMAIN=$DOMAIN && \<< EOF
               echo "Configuring Nginx with security settings..."
 
-              cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
+              export DOMAIN=$DOMAIN && cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
               limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
               server {
