@@ -33,6 +33,8 @@ jobs:
     executor:
       name: docker/docker
       tag: "3.9"
+    environment:
+      DOMAIN: $DOMAIN
     steps:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
