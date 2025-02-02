@@ -37,7 +37,7 @@ jobs:
             ssh -oStrictHostKeyChecking=no "$SSHUSER@$SSHHOST" "bash -c '
               echo \"Configuring Nginx with security settings...\" && 
               echo \"
-                    limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
+                    limit_req_zone $$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
                     server {
                     listen 80;
