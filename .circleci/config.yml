@@ -10,6 +10,11 @@ jobs:
       tag: "3.9"
     steps:
       - run:
+          name: Display CircleCI environment variables
+          command: |
+            echo "Displaying CircleCI environment variables"
+            printenv
+      - run:
           name: Install Dependencies (Nginx, Certbot) if not installed
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
@@ -37,7 +42,7 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
-            ssh -oStrictHostKeyChecking=no "$SSHUSER@$SSHHOST" "export DOMAIN=$DOMAIN && bash -c '
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "env DOMAIN=$DOMAIN bash -c '
               echo \"Configuring Nginx with security settings...\"
               cat \<<EOT | sudo tee /etc/nginx/sites-available/api.conf
               limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
