@@ -47,7 +47,7 @@ jobs:
 
             server {
                 listen 80;
-                server_name $DOMAIN;
+                server_name $DOMAIN www.$DOMAIN;
 
                 limit_req_status 429;
                 location / {
