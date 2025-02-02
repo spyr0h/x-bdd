@@ -37,6 +37,8 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
+            pwd
+            echo "DOMAIN=$DOMAIN" > .cacahuete
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST \<< 'EOF'
               export DOMAIN=$DOMAIN
               echo "Configuring Nginx with security settings..."
@@ -111,8 +113,6 @@ jobs:
             echo "X_BDD=$X_BDD" >> .env
             echo "X_BDD_USER=$X_BDD_USER" >> .env
             echo "X_BDD_PWD=$X_BDD_PWD" >> .env
-            echo "DOMAIN=$DOMAIN" > .cacahuete
-
       - run:
           name: Push Docker Compose File
           command: |
