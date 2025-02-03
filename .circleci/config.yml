@@ -50,6 +50,12 @@ jobs:
                 server_name $DOMAIN www.$DOMAIN;
 
                 limit_req_status 429;
+                
+                location /.well-known/acme-challenge/ {
+                    root /var/lib/letsencrypt/;
+                    allow all;
+                }
+
                 location / {
                     proxy_pass http://localhost:8080;
                     proxy_set_header Host \$host;
