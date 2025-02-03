@@ -6,6 +6,7 @@ orbs:
 jobs:
   approval:
     type: approval
+
   setup-server:
     executor:
       name: docker/docker
@@ -138,27 +139,31 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f ~/x-bdd/docker-compose.yml up -d --build'
 
 workflows:
+  version: 2
   build-and-deploy:
     jobs:
       - setup-server
-      - configure-nginx:
+      - approval:
           requires:
             - setup-server
+      - configure-nginx:
+          requires:
+            - approval
       - approval:
           requires:
             - configure-nginx
       - generate-ssl-certificate:
           requires:
-            - configure-nginx
+            - approval
       - approval:
           requires:
             - generate-ssl-certificate
       - push-docker-compose-file:
           requires:
-            - generate-ssl-certificate
+            - approval
       - approval:
           requires:
             - push-docker-compose-file
       - docker-compose-up:
           requires:
-            - push-docker-compose-file
+            - approval
