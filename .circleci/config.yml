@@ -4,7 +4,19 @@ orbs:
   docker: circleci/docker@2.7.0
 
 jobs:
-  approval:
+  approval_setup_server:
+    type: approval
+
+  approval_configure_nginx:
+    type: approval
+
+  approval_generate_ssl_certificate:
+    type: approval
+
+  approval_push_docker_compose_file:
+    type: approval
+
+  approval_docker_compose_up:
     type: approval
 
   setup-server:
@@ -143,27 +155,27 @@ workflows:
   build-and-deploy:
     jobs:
       - setup-server
-      - approval:
+      - approval_setup_server:
           requires:
             - setup-server
       - configure-nginx:
           requires:
-            - approval
-      - approval:
+            - approval_setup_server
+      - approval_configure_nginx:
           requires:
             - configure-nginx
       - generate-ssl-certificate:
           requires:
-            - approval
-      - approval:
+            - approval_configure_nginx
+      - approval_generate_ssl_certificate:
           requires:
             - generate-ssl-certificate
       - push-docker-compose-file:
           requires:
-            - approval
-      - approval:
+            - approval_generate_ssl_certificate
+      - approval_push_docker_compose_file:
           requires:
             - push-docker-compose-file
       - docker-compose-up:
           requires:
-            - approval
+            - approval_push_docker_compose_file
