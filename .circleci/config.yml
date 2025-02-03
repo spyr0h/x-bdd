@@ -49,12 +49,13 @@ jobs:
                 listen 80;
                 server_name x-api.ovh www.x-api.ovh;
 
+                # Autoriser l'accès aux challenges Let's Encrypt
                 location /.well-known/acme-challenge/ {
                     root /var/lib/letsencrypt/;
                     default_type "text/plain";
                     allow all;
-                    try_files $uri /test_not_found.txt;
                 }
+
                 location / {
                     proxy_pass http://localhost:8080;
                     proxy_set_header Host \$host;
