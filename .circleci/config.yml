@@ -77,7 +77,7 @@ jobs:
             EOF
 
             sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/api.conf
-            sudo nginx -t && sudo systemctl reload nginx
+            sudo nginx -t && sudo systemctl restart nginx
             echo \"Nginx configuration applied successfully!\"
             "
 
@@ -89,13 +89,19 @@ jobs:
       - run:
           name: Generate SSL Certificate if not exists
           command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
+              sudo mkdir -p /var/lib/letsencrypt/.well-known/acme-challenge/
+              sudo chown -R www-data:www-data /var/lib/letsencrypt/
+              sudo chmod -R 755 /var/lib/letsencrypt/
+            '"
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "export DOMAIN=$DOMAIN EMAIL=$EMAIL && bash -c '
               CERT_FILE=\"/etc/letsencrypt/live/$DOMAIN/fullchain.pem\"
               if [ ! -f \"$CERT_FILE\" ]; then
                 echo \"Generating SSL Certificate...\"
-                sudo certbot --nginx -d $DOMAIN --non-interactive --agree-tos -m $EMAIL
+                sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $EMAIL
               else
-                echo \"SSL Certificate already exists. Skipping...\"
+                sudo certbot delete --cert-name x-api.ovh --non-interactive --agree-tos
+                sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $EMAIL
               fi
             '"
 
@@ -136,12 +142,21 @@ workflows:
       - configure-nginx:
           requires:
             - setup-server
+      - approval:
+          requires:
+            - configure-nginx
       - generate-ssl-certificate:
           requires:
             - configure-nginx
+      - approval:
+          requires:
+            - generate-ssl-certificate
       - push-docker-compose-file:
           requires:
             - generate-ssl-certificate
+      - approval:
+          requires:
+            - push-docker-compose-file
       - docker-compose-up:
           requires:
             - push-docker-compose-file
