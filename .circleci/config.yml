@@ -4,6 +4,10 @@ orbs:
   docker: circleci/docker@2.7.0
 
 jobs:
+  approval:
+    type: approval
+    requires:
+      - deploy
   setup-server:
     executor:
       name: docker/docker
