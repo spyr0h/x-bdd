@@ -191,14 +191,15 @@ jobs:
               sudo ufw default allow outgoing
 
               # Bloquer les ports via DOCKER
-              sudo iptables -I DOCKER-USER -p tcp --dport 3000 -j REJECT     # Grafana  
-              sudo iptables -I DOCKER-USER -p tcp --dport 48152 -j REJECT    # PHPMyAdmin
-              sudo iptables -I DOCKER-USER -p tcp --dport 3306 -j REJECT     # MySQL
-              sudo iptables -I DOCKER-USER -p tcp --dport 3100 -j REJECT     # Loki
-              sudo iptables -I DOCKER-USER -p tcp --dport 9090 -j REJECT     # Prometheus
-              
+              sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT   # Grafana
+              sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT   # PHPMyAdmin
+              sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT   # MySQL
+              sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT   # Loki
+              sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT   # Prometheus
+
               # Activer le firewall sans confirmation
               sudo ufw --force enable
+              sudo ufw reload
               
               # Afficher le statut du firewall
               sudo ufw status verbose
