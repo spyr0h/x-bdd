@@ -162,21 +162,15 @@ workflows:
       - configure-nginx:
           requires:
             - approval_configure_nginx
-      - approval_generate_ssl_certificate:
-          requires:
-            - configure-nginx
+      - approval_generate_ssl_certificate
       - generate-ssl-certificate:
           requires:
             - approval_generate_ssl_certificate
-      - approval_push_docker_compose_file:
-          requires:
-            - generate-ssl-certificate
+      - approval_push_docker_compose_file
       - push-docker-compose-file:
           requires:
             - approval_push_docker_compose_file
-      - approval_docker_compose_up:
-          requires:
-            - push-docker-compose-file
+      - approval_docker_compose_up
       - docker-compose-up:
           requires:
             - approval_docker_compose_up
