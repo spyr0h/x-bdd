@@ -19,6 +19,9 @@ jobs:
   step_five_approval_docker_compose_up:
     type: approval
 
+  step_six_approval_configure_firewall:
+    type: approval
+
   setup-server:
     executor:
       name: docker/docker
@@ -150,6 +153,41 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f ~/x-bdd/docker-compose.yml down'
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose -f ~/x-bdd/docker-compose.yml up -d --build'
 
+  configure-firewall:
+    executor:
+      name: docker/docker
+      tag: "3.9"
+    steps:
+      - run:
+          name: Install UFW if not installed
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
+              if ! command -v ufw &> /dev/null; then
+                echo "Installing UFW..."
+                sudo apt update && sudo apt install -y ufw
+              else
+                echo "UFW already installed. Skipping..."
+              fi
+            '"
+      - run:
+          name: Configure Firewall (UFW)
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
+              echo "Setting up firewall..."
+
+              sudo ufw reset
+              sudo ufw allow 22/tcp      # SSH
+              sudo ufw allow 51820/udp   # WireGuard VPN
+              sudo ufw allow 80/tcp      # HTTP
+              sudo ufw allow 443/tcp     # HTTPS
+              sudo ufw default deny incoming
+              sudo ufw default allow outgoing
+              sudo ufw enable
+              sudo ufw status verbose
+
+              echo "Firewall configured successfully!"
+            '"
+
 workflows:
   version: 2
   build-and-deploy:
@@ -174,3 +212,7 @@ workflows:
       - docker-compose-up:
           requires:
             - step_five_approval_docker_compose_up
+      - step_six_approval_configure_firewall
+      - configure-firewall:
+          requires:
+            - step_six_approval_configure_firewall
