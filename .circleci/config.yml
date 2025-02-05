@@ -173,35 +173,34 @@ jobs:
           name: Configure Firewall (UFW)
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
-            echo \"Setting up firewall...\"
+              echo \"Setting up firewall...\"
 
-            # Réinitialisation des règles existantes
-            sudo ufw --force reset
-            
-            # Autorisation des ports nécessaires
-            sudo ufw allow 22/tcp      # SSH
-            sudo ufw allow 51820/udp   # WireGuard VPN
-            sudo ufw allow 80/tcp      # HTTP
-            sudo ufw allow 443/tcp     # HTTPS
-            
-            sudo ufw deny 3000/tcp     # Bloquer Grafana
-            sudo ufw deny 48152/tcp     # Bloquer PhpMyAdmin
-            
-            # Bloquer tous les autres ports entrants
-            sudo ufw default deny incoming
-            
-            # Autoriser toutes les connexions sortantes
-            sudo ufw default allow outgoing
-            
-            # Activer le firewall sans confirmation
-            sudo ufw --force enable
-            
-            # Afficher le statut du firewall
-            sudo ufw status verbose
+              # Réinitialisation des règles existantes
+              sudo ufw --force reset
+              
+              # Autorisation des ports nécessaires
+              sudo ufw allow 22/tcp      # SSH
+              sudo ufw allow 51820/udp   # WireGuard VPN
+              sudo ufw allow 80/tcp      # HTTP
+              sudo ufw allow 443/tcp     # HTTPS
+              
+              sudo ufw deny 3000/tcp     # Bloquer Grafana
+              sudo ufw deny 48152/tcp     # Bloquer PhpMyAdmin
+              
+              # Bloquer tous les autres ports entrants
+              sudo ufw default deny incoming
+              
+              # Autoriser toutes les connexions sortantes
+              sudo ufw default allow outgoing
+              
+              # Activer le firewall sans confirmation
+              sudo ufw --force enable
+              
+              # Afficher le statut du firewall
+              sudo ufw status verbose
 
-            echo \"Firewall configured successfully!\"
-          '"
-
+              echo \"Firewall configured successfully!\"
+            '"
 
 workflows:
   version: 2
