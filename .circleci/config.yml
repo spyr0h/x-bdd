@@ -157,20 +157,20 @@ workflows:
       - step_one_approval_setup_server
       - setup-server:
           requires:
-            - approval_setup_server
+            - step_one_approval_setup_server
       - step_two_approval_configure_nginx
       - configure-nginx:
           requires:
-            - approval_configure_nginx
+            - step_two_approval_configure_nginx
       - step_three_approval_generate_ssl_certificate
       - generate-ssl-certificate:
           requires:
-            - approval_generate_ssl_certificate
+            - step_three_approval_generate_ssl_certificate
       - step_four_approval_push_docker_compose_file
       - push-docker-compose-file:
           requires:
-            - approval_push_docker_compose_file
+            - step_four_approval_push_docker_compose_file
       - step_five_approval_docker_compose_up
       - docker-compose-up:
           requires:
-            - approval_docker_compose_up
+            - step_five_approval_docker_compose_up
