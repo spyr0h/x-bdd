@@ -158,7 +158,7 @@ workflows:
       - setup-server:
           requires:
             - approval_setup_server
-      - approval_configure_nginx:
+      - approval_configure_nginx
       - configure-nginx:
           requires:
             - approval_configure_nginx
