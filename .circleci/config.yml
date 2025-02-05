@@ -154,28 +154,31 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - setup-server
-      - approval_setup_server:
-          requires:
-            - setup-server
-      - configure-nginx:
+      - approval_setup_server
+      - setup-server:
           requires:
             - approval_setup_server
       - approval_configure_nginx:
           requires:
-            - configure-nginx
-      - generate-ssl-certificate:
+            - setup-server
+      - configure-nginx:
           requires:
             - approval_configure_nginx
       - approval_generate_ssl_certificate:
           requires:
-            - generate-ssl-certificate
-      - push-docker-compose-file:
+            - configure-nginx
+      - generate-ssl-certificate:
           requires:
             - approval_generate_ssl_certificate
       - approval_push_docker_compose_file:
           requires:
+            - generate-ssl-certificate
+      - push-docker-compose-file:
+          requires:
+            - approval_push_docker_compose_file
+      - approval_docker_compose_up:
+          requires:
             - push-docker-compose-file
       - docker-compose-up:
           requires:
-            - approval_push_docker_compose_file
+            - approval_docker_compose_up
