@@ -173,19 +173,28 @@ jobs:
           name: Configure Firewall (UFW)
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
-              echo "Setting up firewall..."
+              echo \"Setting up firewall...\"
 
-              sudo ufw reset
+              # Réinitialisation des règles existantes
+              sudo ufw --force reset
+              
+              # Autorisation des ports nécessaires
               sudo ufw allow 22/tcp      # SSH
               sudo ufw allow 51820/udp   # WireGuard VPN
               sudo ufw allow 80/tcp      # HTTP
               sudo ufw allow 443/tcp     # HTTPS
+              
+              # Règles par défaut
               sudo ufw default deny incoming
               sudo ufw default allow outgoing
-              sudo ufw enable
+              
+              # Activer le firewall sans confirmation
+              sudo ufw --force enable
+              
+              # Afficher le statut du firewall
               sudo ufw status verbose
 
-              echo "Firewall configured successfully!"
+              echo \"Firewall configured successfully!\"
             '"
 
 workflows:
