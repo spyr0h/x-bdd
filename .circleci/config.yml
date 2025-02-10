@@ -200,7 +200,7 @@ jobs:
               sudo iptables -I DOCKER-USER -p tcp --dport 3100 -s 10.0.0.2 -j ACCEPT   # Loki
               sudo iptables -I DOCKER-USER -p tcp --dport 9090 -s 10.0.0.2 -j ACCEPT   # Prometheus
 
-              # Bloquer tout le reste sauf localhost (127.0.0.1)
+              # Bloquer tout le reste sauf localhost
               sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT  
