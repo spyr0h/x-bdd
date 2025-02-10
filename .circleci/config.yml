@@ -193,12 +193,19 @@ jobs:
               # Autoriser toutes les connexions sortantes
               sudo ufw default allow outgoing
 
-              # Bloquer les ports via DOCKER
-              sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT   # Grafana
-              sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT   # PHPMyAdmin
-              sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT   # MySQL
-              sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT   # Loki
-              sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT   # Prometheus
+              # Autoriser l'accès depuis le VPN (10.0.0.2)
+              sudo iptables -I DOCKER-USER -p tcp --dport 3000 -s 10.0.0.2 -j ACCEPT   # Grafana
+              sudo iptables -I DOCKER-USER -p tcp --dport 48152 -s 10.0.0.2 -j ACCEPT  # PHPMyAdmin
+              sudo iptables -I DOCKER-USER -p tcp --dport 3306 -s 10.0.0.2 -j ACCEPT   # MySQL
+              sudo iptables -I DOCKER-USER -p tcp --dport 3100 -s 10.0.0.2 -j ACCEPT   # Loki
+              sudo iptables -I DOCKER-USER -p tcp --dport 9090 -s 10.0.0.2 -j ACCEPT   # Prometheus
+
+              # Bloquer tout le reste sauf localhost (127.0.0.1)
+              sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT  
+              sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT  
+              sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT  
+              sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT  
+              sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT  
 
               # Activer le firewall sans confirmation
               sudo ufw --force enable
