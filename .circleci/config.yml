@@ -193,7 +193,7 @@ jobs:
               # Autoriser toutes les connexions sortantes
               sudo ufw default allow outgoing
 
-              # Autoriser l'accès depuis le VPN (10.0.0.2)
+              # Autoriser l'accès depuis le VPN
               sudo iptables -I DOCKER-USER -p tcp --dport 3000 -s 10.0.0.2 -j ACCEPT   # Grafana
               sudo iptables -I DOCKER-USER -p tcp --dport 48152 -s 10.0.0.2 -j ACCEPT  # PHPMyAdmin
               sudo iptables -I DOCKER-USER -p tcp --dport 3306 -s 10.0.0.2 -j ACCEPT   # MySQL
