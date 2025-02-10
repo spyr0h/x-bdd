@@ -207,8 +207,7 @@ jobs:
               sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT  
 
-              # Activer le firewall sans confirmation
-              sudo ufw --force disable && sudo ufw --force enable
+              sudo systemctl restart ufw
               
               # Afficher le statut du firewall
               sudo ufw status verbose
