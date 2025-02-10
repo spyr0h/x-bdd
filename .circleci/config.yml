@@ -209,7 +209,7 @@ jobs:
 
               # Activer le firewall sans confirmation
               sudo ufw --force enable
-              sudo ufw reload
+              sudo ufw disable && sudo ufw enable
               
               # Afficher le statut du firewall
               sudo ufw status verbose
