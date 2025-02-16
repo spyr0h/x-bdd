@@ -178,8 +178,27 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
               echo \"Setting up firewall...\"
 
-              # Réinitialisation des règles existantes
+              # Réinitialisation iptables
+              sudo iptables -F
+              sudo iptables -X
+              sudo iptables -t nat -F
+              sudo iptables -t nat -X
+              sudo iptables -t mangle -F
+              sudo iptables -t mangle -X
+              sudo iptables -P INPUT ACCEPT
+              sudo iptables -P FORWARD ACCEPT
+              sudo iptables -P OUTPUT ACCEPT
+
+              # Réinitialisation iptables IPV6
+              sudo ip6tables -F
+              sudo ip6tables -X
+              sudo ip6tables -P INPUT ACCEPT
+              sudo ip6tables -P FORWARD ACCEPT
+              sudo ip6tables -P OUTPUT ACCEPT
+
+              # Réinitialisation UFW
               sudo ufw --force reset
+              sudo ufw --force disable
               
               # Autorisation des ports nécessaires
               sudo ufw allow 22/tcp      # SSH
@@ -209,7 +228,7 @@ jobs:
 
               # Activer le firewall sans confirmation
               sudo systemctl restart ufw
-              sudo ufw --force disable && sudo ufw --force enable
+              sudo ufw --force enable
               
               # Afficher le statut du firewall
               sudo ufw status verbose
