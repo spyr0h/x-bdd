@@ -205,6 +205,7 @@ jobs:
               sudo ufw allow 51820/udp   # WireGuard VPN
               sudo ufw allow 80/tcp      # HTTP
               sudo ufw allow 443/tcp     # HTTPS
+              sudo ufw allow 8080/tcp    # BASE
               
               # Bloquer tous les autres ports entrants
               sudo ufw default deny incoming
