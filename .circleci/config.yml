@@ -220,12 +220,21 @@ jobs:
               sudo iptables -I DOCKER-USER -p tcp --dport 3100 -s 10.0.0.2 -j ACCEPT   # Loki
               sudo iptables -I DOCKER-USER -p tcp --dport 9090 -s 10.0.0.2 -j ACCEPT   # Prometheus
 
+              # Autoriser laccès depuis le réseau docker
+              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3000 -j ACCEPT   # Grafana
+              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 48152 -j ACCEPT  # PHPMyAdmin
+              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3306 -j ACCEPT   # MySQL
+              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3100 -j ACCEPT   # Loki
+              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 9090 -j ACCEPT   # Prometheus
+
+
               # Bloquer tout le reste sauf localhost
               sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT  
               sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT  
+              
 
               # Activer le firewall sans confirmation
               sudo systemctl restart ufw
