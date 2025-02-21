@@ -201,7 +201,7 @@ jobs:
               # Flush règles DOCKER-USER
               sudo iptables -F DOCKER-USER
 
-              # Autoriser l'accès depuis le VPN (adapte l'IP si nécessaire)
+              # Autoriser l'accès depuis le VPN (adapte lIP si nécessaire)
               sudo iptables -I DOCKER-USER -s 10.0.0.0/24 -j ACCEPT  
 
               # Autoriser tout le trafic interne Docker (sans se soucier des interfaces réseau)
