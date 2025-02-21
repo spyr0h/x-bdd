@@ -207,7 +207,7 @@ jobs:
               sudo iptables -I DOCKER-USER -i br+ -j ACCEPT  
               sudo iptables -I DOCKER-USER -o br+ -j ACCEPT  
 
-              # Bloquer tout accès direct aux services sensibles depuis l'extérieur sauf localhost
+              # Bloquer tout accès direct aux services sensibles depuis lextérieur sauf localhost
               for port in 3000 48152 3306 3100 9090; do
                   sudo iptables -I DOCKER-USER -p tcp ! -s 127.0.0.1 --dport $port -j REJECT
               done
