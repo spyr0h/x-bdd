@@ -197,6 +197,9 @@ jobs:
               # Autoriser toutes les connexions sortantes
               sudo ufw default allow outgoing
 
+              # Créer la chaine si elle n'existe pas
+              sudo iptables -t filter -C DOCKER-USER -j RETURN 2>/dev/null || sudo iptables -t filter -N DOCKER-USER && sudo iptables -t filter -A DOCKER-USER -j RETURN
+
               # Flush règles DOCKER-USER
               sudo iptables -F DOCKER-USER
 
