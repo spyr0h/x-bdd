@@ -178,34 +178,19 @@ jobs:
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "bash -c '
               echo \"Setting up firewall...\"
 
-              # Réinitialisation iptables
-              sudo iptables -F
-              sudo iptables -X
-              sudo iptables -t nat -F
-              sudo iptables -t nat -X
-              sudo iptables -t mangle -F
-              sudo iptables -t mangle -X
-              sudo iptables -P INPUT ACCEPT
-              sudo iptables -P FORWARD ACCEPT
-              sudo iptables -P OUTPUT ACCEPT
-
-              # Réinitialisation iptables IPV6
-              sudo ip6tables -F
-              sudo ip6tables -X
-              sudo ip6tables -P INPUT ACCEPT
-              sudo ip6tables -P FORWARD ACCEPT
-              sudo ip6tables -P OUTPUT ACCEPT
-
               # Réinitialisation UFW
               sudo ufw --force reset
               sudo ufw --force disable
               
               # Autorisation des ports nécessaires
+              sudo ufw allow 80/tcp      # API
               sudo ufw allow 22/tcp      # SSH
               sudo ufw allow 51820/udp   # WireGuard VPN
               sudo ufw allow 80/tcp      # HTTP
               sudo ufw allow 443/tcp     # HTTPS
               sudo ufw allow 8080/tcp    # BASE
+
+              sudo ufw allow from 127.0.0.1 to 127.0.0.1 port 8080 proto tcp
               
               # Bloquer tous les autres ports entrants
               sudo ufw default deny incoming
@@ -213,29 +198,21 @@ jobs:
               # Autoriser toutes les connexions sortantes
               sudo ufw default allow outgoing
 
-              # Autoriser laccès depuis le VPN
-              sudo iptables -I DOCKER-USER -p tcp --dport 3000 -s 10.0.0.2 -j ACCEPT   # Grafana
-              sudo iptables -I DOCKER-USER -p tcp --dport 48152 -s 10.0.0.2 -j ACCEPT  # PHPMyAdmin
-              sudo iptables -I DOCKER-USER -p tcp --dport 3306 -s 10.0.0.2 -j ACCEPT   # MySQL
-              sudo iptables -I DOCKER-USER -p tcp --dport 3100 -s 10.0.0.2 -j ACCEPT   # Loki
-              sudo iptables -I DOCKER-USER -p tcp --dport 9090 -s 10.0.0.2 -j ACCEPT   # Prometheus
+              # Flush règles DOCKER-USER
+              sudo iptables -F DOCKER-USER
 
-              # Autoriser laccès depuis le réseau docker
-              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3000 -j ACCEPT   # Grafana
-              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 48152 -j ACCEPT  # PHPMyAdmin
-              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3306 -j ACCEPT   # MySQL
-              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 3100 -j ACCEPT   # Loki
-              sudo iptables -I DOCKER-USER -i docker0 -p tcp --dport 9090 -j ACCEPT   # Prometheus
+              # Autoriser l'accès depuis le VPN (adapte l'IP si nécessaire)
+              sudo iptables -I DOCKER-USER -s 10.0.0.0/24 -j ACCEPT  
 
+              # Autoriser tout le trafic interne Docker (sans se soucier des interfaces réseau)
+              sudo iptables -I DOCKER-USER -i br+ -j ACCEPT  
+              sudo iptables -I DOCKER-USER -o br+ -j ACCEPT  
 
-              # Bloquer tout le reste sauf localhost
-              sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT  
-              sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT  
-              sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT  
-              sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT  
-              sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT  
+              # Bloquer tout accès direct aux services sensibles depuis l'extérieur sauf localhost
+              for port in 3000 48152 3306 3100 9090; do
+                sudo iptables -I DOCKER-USER -p tcp --dport $port ! -s 127.0.0.1 -j REJECT  
+              done
               
-
               # Activer le firewall sans confirmation
               sudo systemctl restart ufw
               sudo ufw --force enable
