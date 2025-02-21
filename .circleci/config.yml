@@ -207,16 +207,12 @@ jobs:
               sudo iptables -I DOCKER-USER -i br+ -j ACCEPT  
               sudo iptables -I DOCKER-USER -o br+ -j ACCEPT  
 
-              # Set iptables to legacy mode
-              sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-              sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-              sudo update-alternatives --set arptables /usr/sbin/arptables-legacy
-              sudo update-alternatives --set ebtables /usr/sbin/ebtables-legacy
-
               # Bloquer tout accès direct aux services sensibles depuis lextérieur sauf localhost
-              for port in 3000 48152 3306 3100 9090; do
-                  sudo iptables -I DOCKER-USER -p tcp ! -s 127.0.0.1 --dport $port -j REJECT
-              done
+              sudo iptables -I DOCKER-USER -p tcp --dport 3000 ! -s 127.0.0.1 -j REJECT
+              sudo iptables -I DOCKER-USER -p tcp --dport 48152 ! -s 127.0.0.1 -j REJECT
+              sudo iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 127.0.0.1 -j REJECT
+              sudo iptables -I DOCKER-USER -p tcp --dport 3100 ! -s 127.0.0.1 -j REJECT
+              sudo iptables -I DOCKER-USER -p tcp --dport 9090 ! -s 127.0.0.1 -j REJECT
 
               # Persist even if the server reload
               sudo iptables-save > /etc/iptables/rules.v4
