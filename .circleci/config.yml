@@ -66,46 +66,46 @@ jobs:
             - run:
     name: Deploy Nginx Configuration
     command: |
-      ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "cat <<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
-      server {
-          listen 443 ssl;
-          server_name x-api.ovh www.x-api.ovh;
-          
-          ssl_certificate /etc/letsencrypt/live/x-api.ovh/fullchain.pem;
-          ssl_certificate_key /etc/letsencrypt/live/x-api.ovh/privkey.pem;
-          include /etc/letsencrypt/options-ssl-nginx.conf;
-          ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-          
-          # Let's Encrypt challenge
-          location /.well-known/acme-challenge/ {
-              root /var/lib/letsencrypt/;
-          }
+        ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "cat <<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
+        server {
+            listen 443 ssl;
+            server_name x-api.ovh www.x-api.ovh;
+            
+            ssl_certificate /etc/letsencrypt/live/x-api.ovh/fullchain.pem;
+            ssl_certificate_key /etc/letsencrypt/live/x-api.ovh/privkey.pem;
+            include /etc/letsencrypt/options-ssl-nginx.conf;
+            ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+            
+            # Let's Encrypt challenge
+            location /.well-known/acme-challenge/ {
+                root /var/lib/letsencrypt/;
+            }
 
-          # Proxy vers ton API
-          location / {
-              proxy_pass http://localhost:8080;
-              proxy_set_header Host \$host;
-              proxy_set_header X-Real-IP \$remote_addr;
-              proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-          }
-      }
-      
-      server {
-          listen 80;
-          server_name x-api.ovh www.x-api.ovh;
-      
-          location /.well-known/acme-challenge/ {
-              root /var/lib/letsencrypt/;
-          }
-      
-          return 301 https://\$host\$request_uri;
-      }
-      EOF
+            # Proxy vers ton API
+            location / {
+                proxy_pass http://localhost:8080;
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr;
+                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            }
+        }
+        
+        server {
+            listen 80;
+            server_name x-api.ovh www.x-api.ovh;
+        
+            location /.well-known/acme-challenge/ {
+                root /var/lib/letsencrypt/;
+            }
+        
+            return 301 https://\$host\$request_uri;
+        }
+        EOF
 
-      sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/api.conf
-      sudo nginx -t && sudo systemctl restart nginx
-      echo \"Nginx configuration applied successfully!\"
-      "
+        sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/api.conf
+        sudo nginx -t && sudo systemctl restart nginx
+        echo \"Nginx configuration applied successfully!\"
+        "
 
 
   generate-ssl-certificate:
