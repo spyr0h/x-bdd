@@ -63,7 +63,7 @@ jobs:
       - run:
           name: Deploy Nginx Configuration with DDoS Protection
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "cat <<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST "cat\<<'EOF' | sudo tee /etc/nginx/sites-available/api.conf
             server {
                 listen 443 ssl;
                 server_name x-api.ovh www.x-api.ovh;
